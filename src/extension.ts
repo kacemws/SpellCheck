@@ -1,26 +1,116 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import fetch from "node-fetch";
+import * as vscode from "vscode";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
+function createQuickPick(
+  editor: vscode.TextEditor,
+  errors: Array<any>,
+  index: number,
+  text: string
+) {
+  const quickPick = vscode.window.createQuickPick();
+  quickPick.items = errors[index].suggestions.map((suggestion: String) => ({
+    label: suggestion,
+  }));
+
+  quickPick.onDidChangeSelection(([item]) => {
+    if (item) {
+      let aux = text.replace(errors[index].word, item.label);
+      vscode.window.showInformationMessage(item.label);
+      quickPick.dispose();
+      if (errors[index + 1]) {
+        createQuickPick(editor, errors, index + 1, aux);
+      } else {
+        editor.edit((edit: vscode.TextEditorEdit) => {
+          edit.replace(editor.selection, aux);
+        });
+        vscode.window.showInformationMessage(
+          "Update done, keep up with the good work ! "
+        );
+      }
+    }
+  });
+  quickPick.onDidHide(() => quickPick.dispose());
+  quickPick.show();
+}
 export function activate(context: vscode.ExtensionContext) {
+  console.log('Congratulations, your extension "talkless" is now active!');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "talkless" is now active!');
+  let disposable = vscode.commands.registerCommand(
+    "talkless.check",
+    async () => {
+      const editor = vscode.window.activeTextEditor; // the text editor where we would choose a word
+      if (!editor) {
+        vscode.window.showInformationMessage("No editor detected");
+        return;
+      }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('talkless.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
+      const text = editor.document.getText(editor.selection);
+      try {
+        const response = await fetch(
+          "https://jspell-checker.p.rapidapi.com/check",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-rapidapi-key":
+                "469d83cbafmsh6316e64efac12d7p1dc6dajsn422edae87477",
+              "x-rapidapi-host": "jspell-checker.p.rapidapi.com",
+              useQueryString: "true",
+            },
+            body: JSON.stringify({
+              language: "enUS",
+              fieldvalues: text,
+              config: {
+                forceUpperCase: false,
+                ignoreIrregularCaps: false,
+                ignoreFirstCaps: true,
+                ignoreNumbers: true,
+                ignoreUpper: false,
+                ignoreDouble: false,
+                ignoreWordsWithNumbers: true,
+              },
+            }),
+          }
+        );
+        const { spellingErrorCount, elements } = await response.json();
+        if (spellingErrorCount == 0) {
+          console.log("no errors found");
+          vscode.window.showInformationMessage(
+            "no errors found ! well done padwan"
+          );
+          return;
+        } else {
+          vscode.window.showInformationMessage(
+            `Found ${spellingErrorCount} error(s) ! `
+          );
+          createQuickPick(editor, elements[0].errors, 0, text);
+        }
+      } catch (error) {
+        console.log(error);
+      }
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from talkless!');
-	});
+      //   const quickPick = vscode.window.createQuickPick();
 
-	context.subscriptions.push(disposable);
+      //   quickPick.items = data.elements.map((x: any) => ({ label: x.word }));
+      //   quickPick.onDidChangeSelection(([item]) => {
+      //     if (item) {
+      //       // vscode.window.showInformationMessage(item.label);
+      //       editor.edit(edit => {
+      //         edit.replace(editor.selection, item.label);
+      //       });
+      //       quickPick.dispose();
+      //     }
+      //   });
+      //   quickPick.onDidHide(() => quickPick.dispose());
+      //   quickPick.show();
+    }
+  );
+
+  context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
