@@ -1,8 +1,8 @@
 {
-  "name": "talkless",
-  "displayName": "talkless",
-  "description": "A brand new tool that helps you communicate with your team members directly from vs code!",
-  "version": "0.0.1",
+  "name": "spellcheck",
+  "displayName": "Spelling Checker",
+  "description": "A brand new tool that helps you fix your misspelled words",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.52.0"
   },
@@ -10,13 +10,13 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:talkless.check"
+    "onCommand:spellcheck.check"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "talkless.check",
+        "command": "spellcheck.check",
         "title": "Check"
       }
     ]

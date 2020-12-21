@@ -37,10 +37,10 @@ function createQuickPick(
   quickPick.show();
 }
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "talkless" is now active!');
+  console.log('Congratulations, you activated "Spell Check" ');
 
   let disposable = vscode.commands.registerCommand(
-    "talkless.check",
+    "spellcheck.check",
     async () => {
       const editor = vscode.window.activeTextEditor; // the text editor where we would choose a word
       if (!editor) {
