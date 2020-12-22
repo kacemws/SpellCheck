@@ -2,7 +2,7 @@
   "name": "spellcheck",
   "displayName": "Spelling Checker",
   "description": "A brand new tool that helps you fix your misspelled words",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "icon": "assets/SpellCheck.png",
   "publisher": "BelkacemBerras",
   "repository": {
