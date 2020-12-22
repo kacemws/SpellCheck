@@ -1,7 +1,6 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import fetch from "node-fetch";
 import * as vscode from "vscode";
+let conf = require("dotenv").config({ path: __dirname + "/.env" });
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -49,6 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const text = editor.document.getText(editor.selection);
+      console.log(conf);
+      console.log(process.env);
       try {
         const response = await fetch(
           "https://jspell-checker.p.rapidapi.com/check",
@@ -56,8 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-rapidapi-key":
-                "469d83cbafmsh6316e64efac12d7p1dc6dajsn422edae87477",
+              "x-rapidapi-key": `${process.env.API_KEY}`,
               "x-rapidapi-host": "jspell-checker.p.rapidapi.com",
               useQueryString: "true",
             },
