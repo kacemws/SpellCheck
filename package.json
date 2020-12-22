@@ -3,8 +3,12 @@
   "displayName": "Spelling Checker",
   "description": "A brand new tool that helps you fix your misspelled words",
   "version": "0.0.1",
-  "icon": "./assets/SpellCheck.png",
+  "icon": "assets/SpellCheck.png",
   "publisher": "BelkacemBerras",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kacemws/SpellCheck.git"
+  },
   "engines": {
     "vscode": "^1.52.0"
   },
@@ -46,6 +50,7 @@
   },
   "dependencies": {
     "@types/node-fetch": "^2.5.7",
+    "dotenv": "^8.2.0",
     "node-fetch": "^2.6.1"
   }
 }
