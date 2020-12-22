@@ -3,7 +3,7 @@
   "displayName": "Spelling Checker",
   "description": "A brand new tool that helps you fix your misspelled words",
   "version": "0.0.1",
-  "icon": "./src/assets/SpellCheck.png",
+  "icon": "./assets/SpellCheck.png",
   "publisher": "BelkacemBerras",
   "engines": {
     "vscode": "^1.52.0"
